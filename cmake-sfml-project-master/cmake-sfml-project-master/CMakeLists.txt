@@ -24,7 +24,7 @@ file(GLOB_RECURSE AUTOMATIC_SRC_FILES
 )
 
 # Pass the automated list to your executable target
-add_executable(main ${AUTOMATIC_SRC_FILES})
+add_executable(main ${AUTOMATIC_SRC_FILES}  "src/Board.cpp")
 # ====================================================================
 
 # Tells the compiler where to look for local headers

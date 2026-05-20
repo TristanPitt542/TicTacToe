@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "Board.hpp"
 #include <iostream>
 
 void Game::InitialiseWindow()
@@ -16,7 +17,7 @@ void Game::Run()
     //Initialize Window
     InitialiseWindow();
 
-    Menu();
+    Board board(sf::Vector2i(3,4), windowSize);
 
     //Window Loop
     while (window->isOpen()) {
@@ -29,6 +30,7 @@ void Game::Run()
         window->clear();
 
         //draw
+        board.Draw(*window);
 
         window->display();
     }
