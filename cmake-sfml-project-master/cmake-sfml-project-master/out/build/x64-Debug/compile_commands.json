@@ -1,0 +1,8 @@
+[
+{
+  "directory": "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\MSVC\\1451~1.362\\bin\\Hostx64\\x64\\cl.exe  /nologo -DSB_CONFIG_UNITY -I\"E:\\Github Projects\\Tic Tac Toe\\TicTacToe\\cmake-sfml-project-master\\cmake-sfml-project-master\\out\\build\\x64-Debug\\_deps\\sheenbidi-src\\Headers\" -I\"E:\\Github Projects\\Tic Tac Toe\\TicTacToe\\cmake-sfml-project-master\\cmake-sfml-project-master\\out\\build\\x64-Debug\\_deps\\sheenbidi-src\\Source\" /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 -w /Fo_deps\\sheenbidi-build\\CMakeFiles\\SheenBidi.dir\\Source\\SheenBidi.c.obj /Fd_deps\\sheenbidi-build\\CMakeFiles\\SheenBidi.dir\\ /FS -c \"E:\\Github Projects\\Tic Tac Toe\\TicTacToe\\cmake-sfml-project-master\\cmake-sfml-project-master\\out\\build\\x64-Debug\\_deps\\sheenbidi-src\\Source\\SheenBidi.c\"",
+  "file": "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sheenbidi-src/Source/SheenBidi.c",
+  "output": "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sheenbidi-build/CMakeFiles/SheenBidi.dir/Source/SheenBidi.c.obj"
+}
+]
