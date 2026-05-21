@@ -1,35 +1,49 @@
 ﻿#pragma once
 
 #include <SFML/Graphics.hpp>
+#include "Board.hpp"
 
 class Game
 {
+public:
+
+    //Turn
+    enum class Turn {
+        Player1,
+        Player2,
+    };
+
+    Game();
+
+    void InitialiseWindow();
+
+    void Run();
+
+    void SwitchTurn();
+
+    void ProcessInput(Board& board);
+
+    void Menu();
+
 private:
     // Window
     std::unique_ptr<sf::RenderWindow> window;
-    sf::Vector2f windowSize = sf::Vector2f(600, 600);
-    std::string WindowTitle = "TIC TAC TOE";
-    int FPSLimit = 60;
+    sf::Vector2f m_windowSize = sf::Vector2f(600, 600);
+    std::string m_WindowTitle = "TIC TAC TOE";
+    int m_FPSLimit = 60;
+
+    Turn m_currentTurn;
 
     //GameState
-    enum GameState {
+    enum class GameState {
         MENU,
         SINGLEPLAYER,
         MULTIPLAYER,
         HOST,
         CLIENT
     };
-    enum GameState gameState = MENU;
 
-public:
+    GameState m_gameState;
 
-    Game() = default;
-
-    void InitialiseWindow();
-
-    void Run();
-
-    void Menu();
-    
-    void Input();
+    Board m_board;
 };

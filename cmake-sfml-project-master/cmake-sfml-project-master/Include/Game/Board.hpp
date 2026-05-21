@@ -16,9 +16,13 @@ public:
 	Board(sf::Vector2i boardSize, sf::Vector2f widnowSize);
 	~Board();
 
+	//Input
+	bool HandleMouseClick(sf::Vector2i mousePos, CellState playerPiece);
+
+	//Check Board
+	CellState CheckWinCondition() const;
 	CellState GetCellState(int x, int y) const;
 	void SetCellState(int x, int y, CellState state);
 	void ResetBoard();
-	void Update();
 	void Draw(sf::RenderWindow& window);
 };

@@ -18,11 +18,73 @@ Board::Board(sf::Vector2i boardSize, sf::Vector2f windowSize)
     m_boardOffset.x = (windowSize.x - totalBoardWidth) / 2.f;
     m_boardOffset.y = (windowSize.y - totalBoardHeight) / 2.f;
 
-    SetCellState(1, 1, CellState::X);
 }
 
 Board::~Board()
 {
+}
+
+bool Board::HandleMouseClick(sf::Vector2i mousePos, CellState playerPiece)
+{
+    // Subtract the offset to get the position relative to the top-left of the board
+    float relativeX = mousePos.x - m_boardOffset.x;
+    float relativeY = mousePos.y - m_boardOffset.y;
+
+    // Divide by cell size to convert pixels to grid indices
+    int i = static_cast<int>(relativeX / m_cellSize);
+    int j = static_cast<int>(relativeY / m_cellSize);
+
+    // Boundary check
+    if (i >= 0 && i < m_boardSize.x && j >= 0 && j < m_boardSize.y)
+    {
+        // Move validity check, Only allow placing a piece if the tile is empty
+        if (GetCellState(i, j) == CellState::Empty)
+        {
+            SetCellState(i, j, playerPiece);
+            // Click successfully processed and piece placed
+            return true;
+        }
+    }
+
+    // Click was out of bounds or tile was already taken
+    return false; 
+}
+
+CellState Board::CheckWinCondition() const
+{
+    // Direction vectors to check {dx, dy}
+    // Horizontal, Vertical, Diagonal Down-Right, Diagonal Up-Right
+    const sf::Vector2i directions[] = {
+        {1, 0},  // Right
+        {0, 1},  // Down
+        {1, 1},  // Diagonal Down-Right
+        {1, -1}  // Diagonal Up-Right
+    };
+
+    for (int y = 0; y < m_boardSize.y; ++y)
+    {
+        for (int x = 0; x < m_boardSize.x; ++x)
+        {
+            CellState current = GetCellState(x, y);
+            if (current == CellState::Empty) {
+                continue; // Skip empty cells
+            }
+
+            // Look in all 4 directions starting from this cell
+            for (const auto& dir : directions)
+            {
+                // Check if the next two elements in this direction match
+                if (GetCellState(x + dir.x, y + dir.y) == current &&
+                    GetCellState(x + dir.x * 2, y + dir.y * 2) == current)
+                {
+                    //Return winner (X or O)
+                    return current; 
+                }
+            }
+        }
+    }
+    // No winner found yet
+    return CellState::Empty; 
 }
 
 CellState Board::GetCellState(int x, int y) const
@@ -45,10 +107,6 @@ void Board::SetCellState(int x, int y, CellState state)
 void Board::ResetBoard()
 {
 	std::fill(m_board.begin(), m_board.end(), CellState::Empty);
-}
-
-void Board::Update()
-{
 }
 
 void Board::Draw(sf::RenderWindow& window)

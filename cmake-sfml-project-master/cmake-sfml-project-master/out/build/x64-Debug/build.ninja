@@ -96,7 +96,7 @@ build bin\main.exe: CXX_EXECUTABLE_LINKER__main_Debug CMakeFiles\main.dir\src\Bo
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = _deps\sfml-build\lib\sfml-graphics-s-d.lib  _deps\sfml-build\lib\sfml-window-s-d.lib  _deps\sfml-build\lib\sfml-system-s-d.lib  opengl32.lib  winmm.lib  gdi32.lib  _deps\sfml-build\lib\harfbuzzd.lib  _deps\sfml-build\lib\freetyped.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
   OBJECT_DIR = CMakeFiles\main.dir
-  POST_BUILD = cd .
+  POST_BUILD = C:\WINDOWS\system32\cmd.exe /C "cd /D "E:\Github Projects\Tic Tac Toe\TicTacToe\cmake-sfml-project-master\cmake-sfml-project-master\out\build\x64-Debug" && "C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E copy_directory "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/Assets" "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/bin/Assets""
   PRE_LINK = cd .
   TARGET_COMPILE_PDB = CMakeFiles\main.dir\
   TARGET_FILE = bin\main.exe
