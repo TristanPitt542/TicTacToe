@@ -60,6 +60,17 @@ build CMakeFiles\main.dir\src\Board.cpp.obj: CXX_COMPILER__main_unscanned_Debug 
   TARGET_PDB = bin\main.pdb
   TARGET_SUPPORT_DIR = CMakeFiles\main.dir
 
+build CMakeFiles\main.dir\src\Button.cpp.obj: CXX_COMPILER__main_unscanned_Debug E$:\Github$ Projects\Tic$ Tac$ Toe\TicTacToe\cmake-sfml-project-master\cmake-sfml-project-master\src\Button.cpp || cmake_object_order_depends_target_main
+  CONFIG = Debug
+  DEFINES = -DSFML_STATIC
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi
+  INCLUDES = -I"E:\Github Projects\Tic Tac Toe\TicTacToe\cmake-sfml-project-master\cmake-sfml-project-master\Include" -I"E:\Github Projects\Tic Tac Toe\TicTacToe\cmake-sfml-project-master\cmake-sfml-project-master\Include\Game" -external:I"E:\Github Projects\Tic Tac Toe\TicTacToe\cmake-sfml-project-master\cmake-sfml-project-master\out\build\x64-Debug\_deps\sfml-src\include" -external:W0
+  OBJECT_DIR = CMakeFiles\main.dir
+  OBJECT_FILE_DIR = CMakeFiles\main.dir\src
+  TARGET_COMPILE_PDB = CMakeFiles\main.dir\
+  TARGET_PDB = bin\main.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\main.dir
+
 build CMakeFiles\main.dir\src\Game.cpp.obj: CXX_COMPILER__main_unscanned_Debug E$:\Github$ Projects\Tic$ Tac$ Toe\TicTacToe\cmake-sfml-project-master\cmake-sfml-project-master\src\Game.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEFINES = -DSFML_STATIC
@@ -90,7 +101,7 @@ build CMakeFiles\main.dir\src\main.cpp.obj: CXX_COMPILER__main_unscanned_Debug E
 #############################################
 # Link the executable bin\main.exe
 
-build bin\main.exe: CXX_EXECUTABLE_LINKER__main_Debug CMakeFiles\main.dir\src\Board.cpp.obj CMakeFiles\main.dir\src\Game.cpp.obj CMakeFiles\main.dir\src\main.cpp.obj | _deps\sfml-build\lib\sfml-graphics-s-d.lib _deps\sfml-build\lib\sfml-window-s-d.lib _deps\sfml-build\lib\sfml-system-s-d.lib _deps\sfml-build\lib\harfbuzzd.lib _deps\sfml-build\lib\freetyped.lib || _deps\sfml-build\lib\freetyped.lib _deps\sfml-build\lib\harfbuzzd.lib _deps\sfml-build\lib\sfml-graphics-s-d.lib _deps\sfml-build\lib\sfml-system-s-d.lib _deps\sfml-build\lib\sfml-window-s-d.lib
+build bin\main.exe: CXX_EXECUTABLE_LINKER__main_Debug CMakeFiles\main.dir\src\Board.cpp.obj CMakeFiles\main.dir\src\Button.cpp.obj CMakeFiles\main.dir\src\Game.cpp.obj CMakeFiles\main.dir\src\main.cpp.obj | _deps\sfml-build\lib\sfml-graphics-s-d.lib _deps\sfml-build\lib\sfml-window-s-d.lib _deps\sfml-build\lib\sfml-system-s-d.lib _deps\sfml-build\lib\harfbuzzd.lib _deps\sfml-build\lib\freetyped.lib || _deps\sfml-build\lib\freetyped.lib _deps\sfml-build\lib\harfbuzzd.lib _deps\sfml-build\lib\sfml-graphics-s-d.lib _deps\sfml-build\lib\sfml-system-s-d.lib _deps\sfml-build\lib\sfml-window-s-d.lib
   CONFIG = Debug
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -MDd -Zi
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console

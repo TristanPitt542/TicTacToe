@@ -1,11 +1,16 @@
 #include "Game.hpp"
-#include "Board.hpp"
 #include <iostream>
 
 Game::Game() : m_board(sf::Vector2i(3, 4), m_windowSize)
 {
     InitialiseWindow();
-    m_gameState = GameState::SINGLEPLAYER;
+    m_gameState = GameState::MENU;
+
+    //Load Font
+    if (!fnt.openFromFile("Assets/Fonts/arial.ttf"))
+    {
+        std::cout << "Failed to load font from: ";
+    }
 }
 
 void Game::InitialiseWindow()
@@ -23,7 +28,13 @@ void Game::Run()
     m_currentTurn = Turn::Player1;
 
     //Window Loop
-    while (window->isOpen()) {
+    while (window->isOpen())
+    {
+        while (const std::optional event = window->pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
+                window->close();
+        }
 
         switch (m_gameState)
         {
@@ -31,8 +42,7 @@ void Game::Run()
             Menu();
             break;
         case Game::GameState::SINGLEPLAYER:
-            // Input
-            ProcessInput(m_board);
+            Ingame();
             break;
         case Game::GameState::MULTIPLAYER:
             break;
@@ -43,16 +53,6 @@ void Game::Run()
         default:
             break;
         }
-
-
-        // Clear
-        window->clear();
-
-        // Draw
-        m_board.Draw(*window);
-
-        // Display
-        window->display();
     }
 }
 
@@ -63,63 +63,94 @@ void Game::SwitchTurn() {
 
 void Game::ProcessInput(Board& board)
 {
-    std::optional<sf::Event> event = window->pollEvent();
+    // Get current mouse state
+    bool isLeftMousePressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
 
-    while (event.has_value())
+    // Detect release (was pressed last frame, now not pressed)
+    if (m_wasLeftMousePressed && !isLeftMousePressed)
     {
-        // Handle window close
-        if (event->is<sf::Event::Closed>())
-        {
-            window->close();
-        }
+        // Get mouse position relative to window
+        sf::Vector2i mousePos = sf::Mouse::getPosition(*window);
 
-        // Handle mouse clicks
-        if (const auto* mouseClick = event->getIf<sf::Event::MouseButtonPressed>())
+        // Determine which piece to place
+        CellState pieceToPlace = (m_currentTurn == Turn::Player1)
+            ? CellState::X
+            : CellState::O;
+
+        // Handle the click
+        bool moveSuccessful = board.HandleMouseClick(mousePos, pieceToPlace);
+
+        if (moveSuccessful)
         {
-            if (mouseClick->button == sf::Mouse::Button::Left)
+            // Check for winner immediately
+            CellState winner = board.CheckWinCondition();
+
+            if (winner == CellState::X)
             {
-                CellState pieceToPlace = (m_currentTurn == Turn::Player1)
-                    ? CellState::X
-                    : CellState::O;
-
-                bool moveSuccessful = board.HandleMouseClick(mouseClick->position, pieceToPlace);
-
-                if (moveSuccessful)
-                {
-                    // Check for a winner IMMEDIATELY after a valid move
-                    CellState winner = board.CheckWinCondition();
-
-                    if (winner == CellState::X)
-                    {
-                        std::cout << "Player 1 (X) Wins!\n";
-                        m_gameState = GameState::MENU; // Reset state or head back to menu
-                    }
-                    else if (winner == CellState::O)
-                    {
-                        std::cout << "Player 2 (O) Wins!\n";
-                        m_gameState = GameState::MENU;
-                    }
-                    else
-                    {
-                        // No winner yet, proceed to next turn safely
-                        SwitchTurn();
-                    }
-                }
+                std::cout << "Player 1 (X) Wins!\n";
+                m_gameState = GameState::MENU;
+            }
+            else if (winner == CellState::O)
+            {
+                std::cout << "Player 2 (O) Wins!\n";
+                m_gameState = GameState::MENU;
+            }
+            else
+            {
+                SwitchTurn();
             }
         }
-        
-        // Pull next event from OS queue
-        event = window->pollEvent();
+    }
+
+    // Update previous state
+    m_wasLeftMousePressed = isLeftMousePressed;
+
+    // Optional: handle window close via Escape key
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+    {
+        m_gameState = GameState::MENU;
     }
 }
 
 void Game::Menu()
 {
-    sf::Font fnt;
-    if (!fnt.openFromFile("Assets/Fonts/arial.ttf"))
+    window->clear();
+
+    Button startButton({m_windowSize.x / 2.f, 200});
+
+    // Draw title
+    sf::Text menuText(fnt, "MENU", 30);
+    menuText.setPosition({ m_windowSize.x / 2.f, 0 });
+    menuText.setLineAlignment(sf::Text::LineAlignment::Center);
+    window->draw(menuText);
+
+    // Draw button
+    startButton.RenderButton(*window);
+
+    startButton.Update(*window);
+
+    // Check click (release detection handled internally)
+    if (!startButton.IsClicked() && m_wasLeftMousePressed)
     {
-        std::cout << "Failed to load font from: " << std::filesystem::current_path() << "/Assets/Fonts/arial.ttf\n";
+        m_board.ResetBoard();
+        m_gameState = GameState::SINGLEPLAYER;
     }
 
-    sf::Text text = sf::Text(fnt,"Menu");
+    m_wasLeftMousePressed = startButton.IsClicked();
+    window->display();
+}
+
+void Game::Ingame()
+{
+    // Input
+    ProcessInput(m_board);
+
+    // Clear
+    window->clear();
+
+    // Draw
+    m_board.Draw(*window);
+
+    // Display
+    window->display();
 }

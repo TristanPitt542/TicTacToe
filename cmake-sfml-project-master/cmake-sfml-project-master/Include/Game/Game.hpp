@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Board.hpp"
+#include "Button.hpp"
 
 class Game
 {
@@ -25,6 +26,8 @@ public:
 
     void Menu();
 
+    void Ingame();
+
 private:
     // Window
     std::unique_ptr<sf::RenderWindow> window;
@@ -33,6 +36,8 @@ private:
     int m_FPSLimit = 60;
 
     Turn m_currentTurn;
+
+    sf::Font fnt;
 
     //GameState
     enum class GameState {
@@ -46,4 +51,6 @@ private:
     GameState m_gameState;
 
     Board m_board;
+
+    bool m_wasLeftMousePressed = false;
 };

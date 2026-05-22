@@ -24,7 +24,7 @@ file(GLOB_RECURSE AUTOMATIC_FILES
 )
 
 # Create the executable using the automatically discovered list
-add_executable(main ${AUTOMATIC_FILES})
+add_executable(main ${AUTOMATIC_FILES} "src/Button.cpp")
 
 
 target_include_directories(main PRIVATE Include Include/Game)
