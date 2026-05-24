@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-enum class CellState { Empty, X, O };
+enum class CellState { EMPTY, X, O , TIE};
 
 class Board
 {

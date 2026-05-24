@@ -3,7 +3,7 @@
 Board::Board(sf::Vector2i boardSize, sf::Vector2f windowSize)
 {
     m_boardSize = boardSize;
-    m_board = std::vector<CellState>(m_boardSize.x * m_boardSize.y, CellState::Empty);
+    m_board = std::vector<CellState>(m_boardSize.x * m_boardSize.y, CellState::EMPTY);
 
     // Determine cell size based on the smallest window dimension to ensure it fits completely
     float maxBoardWidth = windowSize.x / m_boardSize.x;
@@ -38,7 +38,7 @@ bool Board::HandleMouseClick(sf::Vector2i mousePos, CellState playerPiece)
     if (i >= 0 && i < m_boardSize.x && j >= 0 && j < m_boardSize.y)
     {
         // Move validity check, Only allow placing a piece if the tile is empty
-        if (GetCellState(i, j) == CellState::Empty)
+        if (GetCellState(i, j) == CellState::EMPTY)
         {
             SetCellState(i, j, playerPiece);
             // Click successfully processed and piece placed
@@ -61,13 +61,16 @@ CellState Board::CheckWinCondition() const
         {1, -1}  // Diagonal Up-Right
     };
 
+    bool hasEmptyCell = false;
+
     for (int y = 0; y < m_boardSize.y; ++y)
     {
         for (int x = 0; x < m_boardSize.x; ++x)
         {
             CellState current = GetCellState(x, y);
-            if (current == CellState::Empty) {
-                continue; // Skip empty cells
+            if (current == CellState::EMPTY) {
+                hasEmptyCell = true; // Found an empty spot, so it's not a tie yet
+                continue;
             }
 
             // Look in all 4 directions starting from this cell
@@ -77,21 +80,29 @@ CellState Board::CheckWinCondition() const
                 if (GetCellState(x + dir.x, y + dir.y) == current &&
                     GetCellState(x + dir.x * 2, y + dir.y * 2) == current)
                 {
-                    //Return winner (X or O)
-                    return current; 
+                    // Return winner (X or O)
+                    return current;
                 }
             }
         }
     }
-    // No winner found yet
-    return CellState::Empty; 
+
+    // If we checked the whole board, found no winner, 
+    // and there are absolutely no empty cells left, it's a tie.
+    if (!hasEmptyCell)
+    {
+        return CellState::TIE;
+    }
+
+    // No winner found yet, and there are still open moves
+    return CellState::EMPTY;
 }
 
 CellState Board::GetCellState(int x, int y) const
 {
 	// Out of bounds safety check
 	if (x < 0 || x >= m_boardSize.x || y < 0 || y >= m_boardSize.y) {
-		return CellState::Empty;
+		return CellState::EMPTY;
 	}
 	
 	return m_board[y * m_boardSize.x + x];
@@ -106,7 +117,7 @@ void Board::SetCellState(int x, int y, CellState state)
 
 void Board::ResetBoard()
 {
-	std::fill(m_board.begin(), m_board.end(), CellState::Empty);
+	std::fill(m_board.begin(), m_board.end(), CellState::EMPTY);
 }
 
 void Board::Draw(sf::RenderWindow& window)

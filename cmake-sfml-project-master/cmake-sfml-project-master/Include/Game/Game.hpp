@@ -1,13 +1,14 @@
 ﻿#pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Board.hpp"
-#include "Button.hpp"
+#include "MainMenu.hpp"
+#include <map>
 
 class Game
 {
 public:
-
     //Turn
     enum class Turn {
         Player1,
@@ -18,6 +19,8 @@ public:
 
     void InitialiseWindow();
 
+    void Init();
+    
     void Run();
 
     void SwitchTurn();
@@ -37,9 +40,10 @@ private:
 
     Turn m_currentTurn;
 
-    sf::Font fnt;
+    // Font
+    sf::Font m_gameFont;
 
-    //GameState
+    // GameState
     enum class GameState {
         MENU,
         SINGLEPLAYER,
@@ -49,6 +53,8 @@ private:
     };
 
     GameState m_gameState;
+
+    std::map<GameState, std::unique_ptr<MenuScreen>> m_menus;
 
     Board m_board;
 

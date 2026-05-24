@@ -1,16 +1,12 @@
 #include "Game.hpp"
 #include <iostream>
 
-Game::Game() : m_board(sf::Vector2i(3, 4), m_windowSize)
+Game::Game() : m_board(sf::Vector2i(10, 10), m_windowSize)
 {
     InitialiseWindow();
     m_gameState = GameState::MENU;
 
-    //Load Font
-    if (!fnt.openFromFile("Assets/Fonts/arial.ttf"))
-    {
-        std::cout << "Failed to load font from: ";
-    }
+    Init();
 }
 
 void Game::InitialiseWindow()
@@ -23,36 +19,53 @@ void Game::InitialiseWindow()
     window->setFramerateLimit(m_FPSLimit);
 }
 
+void Game::Init()
+{
+    // 1. Load the persistent font file first
+    if (!m_gameFont.openFromFile("Assets/Fonts/arial.ttf")) {
+        std::cout << "Failed to load engine font!" << std::endl;
+    }
+
+    // 2. Allocate your menu container and pass the stable font reference directly
+    auto mainMenu = std::make_unique<MainMenu>();
+    mainMenu->Init(window->getSize(), m_gameFont);
+
+    // 3. Move the menu interface container into your map
+    m_menus[GameState::MENU] = std::move(mainMenu);
+}
+
 void Game::Run()
 {
     m_currentTurn = Turn::Player1;
 
-    //Window Loop
     while (window->isOpen())
     {
+        // Handle window events
         while (const std::optional event = window->pollEvent())
         {
-            if (event->is<sf::Event::Closed>())
+            if (event->is<sf::Event::Closed>()) {
                 window->close();
+            }
+
+            // Forward the active event to your Menu System while in the menu loop
+            if (m_gameState == GameState::MENU) {
+                auto it = m_menus.find(m_gameState);
+                if (it != m_menus.end()) {
+                    it->second->Update(*event, *window);
+                }
+            }
         }
 
-        switch (m_gameState)
-        {
-        case Game::GameState::MENU:
-            Menu();
-            break;
-        case Game::GameState::SINGLEPLAYER:
-            Ingame();
-            break;
-        case Game::GameState::MULTIPLAYER:
-            break;
-        case Game::GameState::HOST:
-            break;
-        case Game::GameState::CLIENT:
-            break;
-        default:
-            break;
+        window->clear();
+
+        if (m_gameState == GameState::MENU) {
+            Menu(); // Checks actions and draws
         }
+        else if (m_gameState == GameState::SINGLEPLAYER) {
+            Ingame();
+        }
+
+        window->display();
     }
 }
 
@@ -95,6 +108,11 @@ void Game::ProcessInput(Board& board)
                 std::cout << "Player 2 (O) Wins!\n";
                 m_gameState = GameState::MENU;
             }
+            else if (winner == CellState::TIE)
+            {
+                std::cout << "Tie!\n";
+                m_gameState = GameState::MENU;
+            }
             else
             {
                 SwitchTurn();
@@ -114,43 +132,28 @@ void Game::ProcessInput(Board& board)
 
 void Game::Menu()
 {
-    window->clear();
+    // Draw the active menu layout screen
+    auto it = m_menus.find(m_gameState);
+    if (it != m_menus.end()) {
+        it->second->Draw(*window);
+    }
 
-    Button startButton({m_windowSize.x / 2.f, 200});
+    // Process state change targets safely
+    MainMenu* mainMenu = static_cast<MainMenu*>(m_menus[GameState::MENU].get());
+    if (mainMenu && mainMenu->IsPlayPressed()) {
 
-    // Draw title
-    sf::Text menuText(fnt, "MENU", 30);
-    menuText.setPosition({ m_windowSize.x / 2.f, 0 });
-    menuText.setLineAlignment(sf::Text::LineAlignment::Center);
-    window->draw(menuText);
+        mainMenu->ResetClickState(); // Clear the button's internal state flag
 
-    // Draw button
-    startButton.RenderButton(*window);
-
-    startButton.Update(*window);
-
-    // Check click (release detection handled internally)
-    if (!startButton.IsClicked() && m_wasLeftMousePressed)
-    {
         m_board.ResetBoard();
         m_gameState = GameState::SINGLEPLAYER;
     }
-
-    m_wasLeftMousePressed = startButton.IsClicked();
-    window->display();
 }
 
 void Game::Ingame()
 {
-    // Input
+    // Input Processing
     ProcessInput(m_board);
 
-    // Clear
-    window->clear();
-
-    // Draw
+    // Draw operations only (No window clear or display wrappers here!)
     m_board.Draw(*window);
-
-    // Display
-    window->display();
 }
