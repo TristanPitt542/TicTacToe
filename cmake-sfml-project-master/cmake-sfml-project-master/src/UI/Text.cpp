@@ -1,7 +1,7 @@
 #include "Text.hpp"
 
-Text::Text(sf::Vector2f position, std::string text, const sf::Font& font, sf::Color color)
-    : text(font, text)
+Text::Text(sf::Vector2f position, std::string text, const sf::Font& font, float textSize,sf::Color color)
+    : text(font, text, textSize)
 {
     this->color = color;
     this->text.setFillColor(sf::Color::Black);
@@ -17,6 +17,11 @@ Text::Text(sf::Vector2f position, std::string text, const sf::Font& font, sf::Co
 
 Text::~Text()
 {
+}
+
+void Text::SetText(std::string text)
+{
+    this->text.setString(text);
 }
 
 void Text::Update(const sf::Event& event, const sf::RenderWindow& window)

@@ -115,9 +115,21 @@ void Board::SetCellState(int x, int y, CellState state)
 	}
 }
 
-void Board::ResetBoard()
+void Board::ResetBoard(sf::Vector2i boardSize, sf::Vector2f windowSize)
 {
-	std::fill(m_board.begin(), m_board.end(), CellState::EMPTY);
+    m_boardSize = boardSize;
+    m_board.assign(m_boardSize.x * m_boardSize.y, CellState::EMPTY);
+
+    // Recalculate layout metrics dynamically so the grid scales to fit perfectly
+    float maxBoardWidth = windowSize.x / m_boardSize.x;
+    float maxBoardHeight = windowSize.y / m_boardSize.y;
+    m_cellSize = std::min(maxBoardWidth, maxBoardHeight);
+
+    float totalBoardWidth = m_boardSize.x * m_cellSize;
+    float totalBoardHeight = m_boardSize.y * m_cellSize;
+
+    m_boardOffset.x = (windowSize.x - totalBoardWidth) / 2.f;
+    m_boardOffset.y = (windowSize.y - totalBoardHeight) / 2.f;
 }
 
 void Board::Draw(sf::RenderWindow& window)

@@ -4,6 +4,7 @@
 #include <SFML/Audio.hpp>
 #include "Board.hpp"
 #include "MainMenu.hpp"
+#include "PlaySettings.hpp"
 #include <map>
 
 class Game
@@ -29,6 +30,8 @@ public:
 
     void Menu();
 
+    void PlaySettingsMenu();
+
     void Ingame();
 
 private:
@@ -37,20 +40,28 @@ private:
     sf::Vector2f m_windowSize = sf::Vector2f(600, 600);
     std::string m_WindowTitle = "TIC TAC TOE";
     int m_FPSLimit = 60;
-
-    Turn m_currentTurn;
+    sf::Color m_background = sf::Color(50, 50, 50);
 
     // Font
     sf::Font m_gameFont;
+
+    // Sound
+    sf::SoundBuffer m_buffer;
+    sf::Sound m_sound;
+    sf::Music m_music;
+
 
     // GameState
     enum class GameState {
         MENU,
         SINGLEPLAYER,
+        PLAYSETTINGS,
         MULTIPLAYER,
         HOST,
         CLIENT
     };
+
+    Turn m_currentTurn;
 
     GameState m_gameState;
 

@@ -1,14 +1,20 @@
 #include "Button.hpp"
 
-Button::Button(sf::Vector2f position, std::string buttonText, const sf::Font& font)
-	: buttonText(position, buttonText, font)
+Button::Button(sf::Vector2f position, std::string buttonText, const sf::Font& font, sf::Vector2f buttonSize)
+	: buttonText(position, buttonText, font), sound(buffer)
 {
 	this->colorIdle = sf::Color::White;
 	this->colorHover = sf::Color::Green;
 	this->colorPressed = sf::Color::Red;
 	this->buttonState = IDLE;
 
-	shape.setSize({ 200,75 });
+    if (!buffer.loadFromFile("Assets/Sounds/thump.mp3"))
+    {
+        std::cout << "Failed to load buton sound!" << std::endl;
+    }
+
+    this->sound.setVolume(2);
+	shape.setSize({ buttonSize });
 	shape.setFillColor(colorIdle);
 	shape.setOrigin({ shape.getSize().x / 2.f, shape.getSize().y / 2.f });
 	shape.setPosition(position);
@@ -48,6 +54,9 @@ void Button::Update(const sf::Event& event, const sf::RenderWindow& window)
             const auto* mouseEvent = event.getIf<sf::Event::MouseButtonReleased>();
             if (mouseEvent && mouseEvent->button == sf::Mouse::Button::Left)
             {
+                // Play Sound
+                sound.play();
+
                 this->buttonState = PRESSED;
                 this->shape.setFillColor(colorPressed);
             }

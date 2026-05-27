@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "UIElement.hpp"
 #include "Text.hpp"
 
@@ -22,11 +23,15 @@ private:
 	// Text
 	Text buttonText;
 	
+	// Sound
+	sf::SoundBuffer buffer;
+	sf::Sound sound;
+	
 	// Button State(IDLE ,HOVER ,PRESSED)
 	int buttonState;
 
 public:
-	Button(sf::Vector2f position, std::string buttonText, const sf::Font& font);
+	Button(sf::Vector2f position, std::string buttonText, const sf::Font& font, sf::Vector2f buttonSize = sf::Vector2f(200, 75));
 	~Button();
 
 	bool IsClicked() const;

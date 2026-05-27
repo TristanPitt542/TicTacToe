@@ -23,6 +23,6 @@ public:
 	CellState CheckWinCondition() const;
 	CellState GetCellState(int x, int y) const;
 	void SetCellState(int x, int y, CellState state);
-	void ResetBoard();
+	void ResetBoard(sf::Vector2i boardSize, sf::Vector2f windowSize);
 	void Draw(sf::RenderWindow& window);
 };

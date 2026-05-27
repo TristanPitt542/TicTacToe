@@ -1,7 +1,7 @@
 #include "Game.hpp"
 #include <iostream>
 
-Game::Game() : m_board(sf::Vector2i(10, 10), m_windowSize)
+Game::Game() : m_board(sf::Vector2i(static_cast<int>(GameSettings::GetBoardSize().x), static_cast<int>(GameSettings::GetBoardSize().y)), m_windowSize), m_sound(m_buffer)
 {
     InitialiseWindow();
     m_gameState = GameState::MENU;
@@ -21,17 +21,37 @@ void Game::InitialiseWindow()
 
 void Game::Init()
 {
-    // 1. Load the persistent font file first
-    if (!m_gameFont.openFromFile("Assets/Fonts/arial.ttf")) {
+    // Load the font file first
+    if (!m_gameFont.openFromFile("Assets/Fonts/arial.ttf"))
+    {
         std::cout << "Failed to load engine font!" << std::endl;
     }
 
-    // 2. Allocate your menu container and pass the stable font reference directly
+    // Load the sounds from file
+    if (!m_buffer.loadFromFile("Assets/Sounds/thump.mp3"))
+    {
+        std::cout << "Failed to load engine sound!" << std::endl;
+    }
+    m_sound.setVolume(2);
+
+    if (!m_music.openFromFile("Assets/Sounds/music.mp3"))
+    {
+        std::cout << "Failed to load engine music!" << std::endl;
+    }
+    m_music.setVolume(2);
+    m_music.setLooping(true);
+    m_music.play();
+
+    // Allocate your menu container and pass the stable font reference directly
     auto mainMenu = std::make_unique<MainMenu>();
     mainMenu->Init(window->getSize(), m_gameFont);
 
-    // 3. Move the menu interface container into your map
+    auto playSettings = std::make_unique<PlaySettings>();
+    playSettings->Init(window->getSize(), m_gameFont);
+
+    // Move the menu interface container into your map
     m_menus[GameState::MENU] = std::move(mainMenu);
+    m_menus[GameState::PLAYSETTINGS] = std::move(playSettings);
 }
 
 void Game::Run()
@@ -48,21 +68,33 @@ void Game::Run()
             }
 
             // Forward the active event to your Menu System while in the menu loop
-            if (m_gameState == GameState::MENU) {
-                auto it = m_menus.find(m_gameState);
-                if (it != m_menus.end()) {
-                    it->second->Update(*event, *window);
-                }
+            auto it = m_menus.find(m_gameState);
+            if (it != m_menus.end()) {
+                it->second->Update(*event, *window);
             }
         }
 
-        window->clear();
-
-        if (m_gameState == GameState::MENU) {
-            Menu(); // Checks actions and draws
-        }
-        else if (m_gameState == GameState::SINGLEPLAYER) {
+        window->clear(m_background);
+        switch (m_gameState)
+        {
+        case Game::GameState::MENU:
+            Menu();
+            break;
+        case Game::GameState::SINGLEPLAYER:
             Ingame();
+            break;
+        case Game::GameState::PLAYSETTINGS:
+            PlaySettingsMenu();
+            break;
+        case Game::GameState::MULTIPLAYER:
+            Ingame();
+            break;
+        case Game::GameState::HOST:
+            break;
+        case Game::GameState::CLIENT:
+            break;
+        default:
+            break;
         }
 
         window->display();
@@ -95,6 +127,8 @@ void Game::ProcessInput(Board& board)
 
         if (moveSuccessful)
         {
+            m_sound.play();
+
             // Check for winner immediately
             CellState winner = board.CheckWinCondition();
 
@@ -142,11 +176,61 @@ void Game::Menu()
     MainMenu* mainMenu = static_cast<MainMenu*>(m_menus[GameState::MENU].get());
     if (mainMenu && mainMenu->IsPlayPressed()) {
 
-        mainMenu->ResetClickState(); // Clear the button's internal state flag
+        mainMenu->ResetClickState();
 
-        m_board.ResetBoard();
+        m_gameState = GameState::PLAYSETTINGS;
+    }
+}
+
+void Game::PlaySettingsMenu()
+{
+    // Draw the active menu layout screen
+    auto it = m_menus.find(m_gameState);
+    if (it != m_menus.end()) {
+        it->second->Draw(*window);
+    }
+
+    // Process state change targets safely
+    PlaySettings* playSettings = static_cast<PlaySettings*>(m_menus[GameState::PLAYSETTINGS].get());
+    if (playSettings && playSettings->IsBackPressed()) {
+
+        playSettings->ResetClickState();
+
+        m_gameState = GameState::MENU;
+    }
+    else if (playSettings && playSettings->IsWidthMinusPressed()) {
+
+        playSettings->ResetClickState();
+       
+        playSettings->ChangeBoardSize({ -1,0 });
+    }
+    else if (playSettings && playSettings->IsWidthPlusPressed()) {
+
+        playSettings->ResetClickState();
+
+        playSettings->ChangeBoardSize({ 1,0 });
+    }
+    else if (playSettings && playSettings->IsHeightMinusPressed()) {
+
+        playSettings->ResetClickState();
+
+        playSettings->ChangeBoardSize({ 0,-1 });
+    }
+    else if (playSettings && playSettings->IsHeightPlusPressed()) {
+
+        playSettings->ResetClickState();
+
+        playSettings->ChangeBoardSize({ 0,1 });
+    }
+    else if (playSettings && playSettings->IsPlayPressed()) {
+
+        playSettings->ResetClickState();
+
+        m_board.ResetBoard(sf::Vector2i(static_cast<int>(GameSettings::GetBoardSize().x), static_cast<int>(GameSettings::GetBoardSize().y)),m_windowSize);
+        
         m_gameState = GameState::SINGLEPLAYER;
     }
+
 }
 
 void Game::Ingame()
@@ -154,6 +238,6 @@ void Game::Ingame()
     // Input Processing
     ProcessInput(m_board);
 
-    // Draw operations only (No window clear or display wrappers here!)
+    // Render
     m_board.Draw(*window);
 }
