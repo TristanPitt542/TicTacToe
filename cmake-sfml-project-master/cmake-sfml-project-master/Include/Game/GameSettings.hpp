@@ -14,7 +14,7 @@ public:
 
 	//Setters
 	static void SetBoardSize(const sf::Vector2i& boardSize) {
-		m_boardSize = sf::Vector2i(std::clamp(boardSize.x, 0, INT_MAX), std::clamp(boardSize.y, 0, INT_MAX));
+		m_boardSize = sf::Vector2i(std::clamp(boardSize.x, 3, INT_MAX), std::clamp(boardSize.y, 3, INT_MAX));
 	}
 	static void SetVolume(float volume) { m_masterVolume = volume; };
 

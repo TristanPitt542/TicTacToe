@@ -5,6 +5,7 @@
 #include "Board.hpp"
 #include "MainMenu.hpp"
 #include "PlaySettings.hpp"
+#include "GameOver.hpp"
 #include <map>
 
 class Game
@@ -32,6 +33,8 @@ public:
 
     void PlaySettingsMenu();
 
+    void GameOverMenu();
+
     void Ingame();
 
 private:
@@ -46,7 +49,9 @@ private:
     sf::Font m_gameFont;
 
     // Sound
-    sf::SoundBuffer m_buffer;
+    sf::SoundBuffer m_placeBuffer;
+    sf::SoundBuffer m_gameOverBuffer;
+
     sf::Sound m_sound;
     sf::Music m_music;
 
@@ -57,6 +62,7 @@ private:
         SINGLEPLAYER,
         PLAYSETTINGS,
         MULTIPLAYER,
+        GAMEOVER,
         HOST,
         CLIENT
     };

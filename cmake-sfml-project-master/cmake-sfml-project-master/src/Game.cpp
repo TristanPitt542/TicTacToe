@@ -1,7 +1,7 @@
 #include "Game.hpp"
 #include <iostream>
 
-Game::Game() : m_board(sf::Vector2i(static_cast<int>(GameSettings::GetBoardSize().x), static_cast<int>(GameSettings::GetBoardSize().y)), m_windowSize), m_sound(m_buffer)
+Game::Game() : m_board(GameSettings::GetBoardSize(), m_windowSize), m_sound(m_placeBuffer)
 {
     InitialiseWindow();
     m_gameState = GameState::MENU;
@@ -28,11 +28,16 @@ void Game::Init()
     }
 
     // Load the sounds from file
-    if (!m_buffer.loadFromFile("Assets/Sounds/thump.mp3"))
+    if (!m_placeBuffer.loadFromFile("Assets/Sounds/thump.mp3"))
     {
         std::cout << "Failed to load engine sound!" << std::endl;
     }
     m_sound.setVolume(2);
+
+    if (!m_gameOverBuffer.loadFromFile("Assets/Sounds/gameover.mp3"))
+    {
+        std::cout << "Failed to load GameOver sound!" << std::endl;
+    }
 
     if (!m_music.openFromFile("Assets/Sounds/music.mp3"))
     {
@@ -49,9 +54,13 @@ void Game::Init()
     auto playSettings = std::make_unique<PlaySettings>();
     playSettings->Init(window->getSize(), m_gameFont);
 
+    auto gameOver = std::make_unique<GameOver>();
+    gameOver->Init(window->getSize(), m_gameFont);
+
     // Move the menu interface container into your map
     m_menus[GameState::MENU] = std::move(mainMenu);
     m_menus[GameState::PLAYSETTINGS] = std::move(playSettings);
+    m_menus[GameState::GAMEOVER] = std::move(gameOver);
 }
 
 void Game::Run()
@@ -77,21 +86,24 @@ void Game::Run()
         window->clear(m_background);
         switch (m_gameState)
         {
-        case Game::GameState::MENU:
+        case GameState::MENU:
             Menu();
             break;
-        case Game::GameState::SINGLEPLAYER:
+        case GameState::SINGLEPLAYER:
             Ingame();
             break;
-        case Game::GameState::PLAYSETTINGS:
+        case GameState::PLAYSETTINGS:
             PlaySettingsMenu();
             break;
-        case Game::GameState::MULTIPLAYER:
+        case GameState::MULTIPLAYER:
             Ingame();
             break;
-        case Game::GameState::HOST:
+        case GameState::GAMEOVER:
+            GameOverMenu();
             break;
-        case Game::GameState::CLIENT:
+        case GameState::HOST:
+            break;
+        case GameState::CLIENT:
             break;
         default:
             break;
@@ -127,25 +139,36 @@ void Game::ProcessInput(Board& board)
 
         if (moveSuccessful)
         {
+            m_sound.setBuffer(m_placeBuffer);
             m_sound.play();
 
             // Check for winner immediately
             CellState winner = board.CheckWinCondition();
 
+
             if (winner == CellState::X)
             {
+                m_sound.setBuffer(m_gameOverBuffer);
+                m_sound.play();
+
                 std::cout << "Player 1 (X) Wins!\n";
-                m_gameState = GameState::MENU;
+                m_gameState = GameState::GAMEOVER;
             }
             else if (winner == CellState::O)
             {
+                m_sound.setBuffer(m_gameOverBuffer);
+                m_sound.play();
+                
                 std::cout << "Player 2 (O) Wins!\n";
-                m_gameState = GameState::MENU;
+                m_gameState = GameState::GAMEOVER;
             }
             else if (winner == CellState::TIE)
             {
+                m_sound.setBuffer(m_gameOverBuffer);
+                m_sound.play();
+
                 std::cout << "Tie!\n";
-                m_gameState = GameState::MENU;
+                m_gameState = GameState::GAMEOVER;
             }
             else
             {
@@ -226,11 +249,31 @@ void Game::PlaySettingsMenu()
 
         playSettings->ResetClickState();
 
-        m_board.ResetBoard(sf::Vector2i(static_cast<int>(GameSettings::GetBoardSize().x), static_cast<int>(GameSettings::GetBoardSize().y)),m_windowSize);
+        m_board.ResetBoard(GameSettings::GetBoardSize(),m_windowSize);
         
         m_gameState = GameState::SINGLEPLAYER;
     }
 
+}
+
+void Game::GameOverMenu()
+{
+    // Draw the active menu layout screen
+    auto it = m_menus.find(m_gameState);
+    if (it != m_menus.end()) {
+        it->second->Draw(*window);
+    }
+
+    // Process state change targets safely
+    GameOver* gameOver = static_cast<GameOver*>(m_menus[GameState::GAMEOVER].get());
+
+    if (gameOver && gameOver->isAgainPressed()) {
+        m_board.ResetBoard(GameSettings::GetBoardSize(), m_windowSize);
+        m_gameState = GameState::SINGLEPLAYER;
+    }
+    else if (gameOver && gameOver->isBackPressed()) {
+        m_gameState = GameState::MENU;
+    }
 }
 
 void Game::Ingame()

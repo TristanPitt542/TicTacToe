@@ -36,8 +36,10 @@ public:
     }
 
     void ResetClickState() {
-        if (m_singlePlayerButton) {
-            m_singlePlayerButton->ResetClickState();
+        for (Button* button : { m_singlePlayerButton, m_multiPlayerButton, m_optionsButton }) {
+            if (button) {
+                button->ResetClickState();
+            }
         }
     }
 
