@@ -34,7 +34,7 @@ public:
 	Button(sf::Vector2f position, std::string buttonText, const sf::Font& font, sf::Vector2f buttonSize = sf::Vector2f(200, 75));
 	~Button();
 
-	bool IsClicked() const;
+	bool IsClicked();
 	bool IsHover() const;
 
 	virtual void Update(const sf::Event& event, const sf::RenderWindow& window) override;
