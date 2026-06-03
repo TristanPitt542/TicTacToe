@@ -1,4 +1,4 @@
-<img width="720" height="720" alt="tictactoegif" src="https://github.com/user-attachments/assets/9dff5f40-bee4-41e8-9380-f387a8eca28b" />
+<img width="1280" height="720" alt="tictactoegif" src="https://github.com/user-attachments/assets/29662421-ec5a-42b5-8308-8df33469ab17" />
 
 Tic-Tac-Toe (SFML & C++)
 A dynamic, state-driven Tic-Tac-Toe game engine built in C++ using the SFML framework. It features an expandable grid system, polymorphism-based UI menus, and safe memory management tracking.
