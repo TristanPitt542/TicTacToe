@@ -18,6 +18,10 @@ private:
     Button* m_boardHeightMinus = nullptr;
     Button* m_boardHeightPlus = nullptr;
     
+    Text* m_winLength = nullptr;
+    Button* m_winLengthMinus= nullptr;
+    Button* m_winLengthPlus = nullptr;
+
     Button* m_play = nullptr;
 
     Button* m_back = nullptr;
@@ -25,40 +29,62 @@ private:
 
 public:
     void Init(const sf::Vector2u& windowSize, const sf::Font& font) override {
+        m_elements.clear();
         float centerX = windowSize.x / 2.f;
 
+        // Title
         auto title = std::make_unique<Text>(sf::Vector2f(centerX, 100.f), "Play Settings",font, 60.0f);
         
+        // Board Width
         auto boardWidth = std::make_unique<Text>(sf::Vector2f(centerX, 250.f), "Board Width: " + std::to_string(static_cast<int>(GameSettings::GetBoardSize().x)), font);
         auto boardWidthMinus = std::make_unique<Button>(sf::Vector2f(centerX - (centerX / 2), 250.f), "-", font, sf::Vector2f(50, 50));
         auto boardWidthPlus = std::make_unique<Button>(sf::Vector2f(centerX + (centerX / 2), 250.f), "+", font, sf::Vector2f(50, 50));
 
+        // Board Height
         auto boardHeight = std::make_unique<Text>(sf::Vector2f(centerX, 350.f), "Board Height: " + std::to_string(static_cast<int>(GameSettings::GetBoardSize().y)), font);
         auto boardHeightMinus = std::make_unique<Button>(sf::Vector2f(centerX - (centerX / 2), 350.f), "-", font, sf::Vector2f(50, 50));
         auto boardHeightPlus = std::make_unique<Button>(sf::Vector2f(centerX + (centerX / 2), 350.f), "+", font, sf::Vector2f(50, 50));
         
-        auto play = std::make_unique<Button>(sf::Vector2f(centerX, 450), "Play", font);
+        // Win Length
+        auto winLength = std::make_unique<Text>(sf::Vector2f(centerX, 450.f), "Win Length: " + std::to_string(static_cast<int>(GameSettings::GetWinLength())), font);
+        auto winLengthMinus = std::make_unique<Button>(sf::Vector2f(centerX - (centerX / 2), 450.f), "-", font, sf::Vector2f(50, 50));
+        auto winLengthPlus = std::make_unique<Button>(sf::Vector2f(centerX + (centerX / 2), 450.f), "+", font, sf::Vector2f(50, 50));
 
-        auto back = std::make_unique<Button>(sf::Vector2f(centerX, 550), "Back", font);
+        // Play
+        auto play = std::make_unique<Button>(sf::Vector2f(centerX, 550), "Play", font);
 
+        // Back
+        auto back = std::make_unique<Button>(sf::Vector2f(centerX, 650), "Back", font);
+
+        // Pointers
         m_boardWidthMinus = boardWidthMinus.get();
         m_boardWidthPlus = boardWidthPlus.get();
+
         m_boardHeightMinus = boardHeightMinus.get();
         m_boardHeightPlus = boardHeightPlus.get();
-        m_boardWidth = boardWidth.get();
-        m_boardHeight = boardHeight.get();
+        
+        m_winLength = winLength.get();
+        m_winLengthMinus = winLengthMinus.get();
+        m_winLengthPlus = winLengthPlus.get();
 
         m_play = play.get();
 
         m_back = back.get();
 
+        // Add to Elements
         m_elements.push_back(std::move(title));
+
         m_elements.push_back(std::move(boardWidth));
         m_elements.push_back(std::move(boardWidthMinus));
         m_elements.push_back(std::move(boardWidthPlus));
+
         m_elements.push_back(std::move(boardHeight));
         m_elements.push_back(std::move(boardHeightMinus));
         m_elements.push_back(std::move(boardHeightPlus));
+
+        m_elements.push_back(std::move(winLength));
+        m_elements.push_back(std::move(winLengthMinus));
+        m_elements.push_back(std::move(winLengthPlus));
 
         m_elements.push_back(std::move(play));
 
@@ -85,10 +111,19 @@ public:
         m_boardHeight->SetText("Board Height: " + std::to_string(static_cast<int>(GameSettings::GetBoardSize().y)));
     }
 
+    void ChangeWinLength(float winLength) {
+        static_cast<void>(GameSettings::SetWinLength(GameSettings::GetWinLength() + winLength));
+        m_winLength->SetText("Win Length: " + std::to_string(static_cast<int>(GameSettings::GetWinLength())));
+    }
+
     bool IsWidthMinusPressed() const { return m_boardWidthMinus->IsClicked(); };
     bool IsWidthPlusPressed() const { return m_boardWidthPlus->IsClicked(); };
+
     bool IsHeightMinusPressed() const { return m_boardHeightMinus->IsClicked(); };
     bool IsHeightPlusPressed() const { return m_boardHeightPlus->IsClicked(); };
+
+    bool IsWinLengthMinusPressed() const { return m_winLengthMinus->IsClicked(); };
+    bool IsWinLengthPlusPressed() const { return m_winLengthPlus->IsClicked(); };
 
     bool IsPlayPressed() const { return m_play->IsClicked(); };
 

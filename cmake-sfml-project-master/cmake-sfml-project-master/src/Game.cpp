@@ -143,32 +143,21 @@ void Game::ProcessInput(Board& board)
             m_sound.play();
 
             // Check for winner immediately
-            CellState winner = board.CheckWinCondition();
+            CellState winner = board.CheckWinCondition(GameSettings::GetWinLength());
 
-
-            if (winner == CellState::X)
+            if (winner == CellState::X || winner == CellState::O || winner == CellState::TIE)
             {
                 m_sound.setBuffer(m_gameOverBuffer);
                 m_sound.play();
 
-                std::cout << "Player 1 (X) Wins!\n";
+                m_winner = winner;
                 m_gameState = GameState::GAMEOVER;
-            }
-            else if (winner == CellState::O)
-            {
-                m_sound.setBuffer(m_gameOverBuffer);
-                m_sound.play();
-                
-                std::cout << "Player 2 (O) Wins!\n";
-                m_gameState = GameState::GAMEOVER;
-            }
-            else if (winner == CellState::TIE)
-            {
-                m_sound.setBuffer(m_gameOverBuffer);
-                m_sound.play();
 
-                std::cout << "Tie!\n";
-                m_gameState = GameState::GAMEOVER;
+                auto* gameOver = static_cast<GameOver*>(m_menus[GameState::GAMEOVER].get());
+                if (gameOver) {
+                    gameOver->SetWinner(m_winner);          // Pass the winner state
+                    gameOver->Init(window->getSize(), m_gameFont); // Re-bake the Text elements
+                }
             }
             else
             {
@@ -253,6 +242,18 @@ void Game::PlaySettingsMenu()
         
         m_gameState = GameState::SINGLEPLAYER;
     }
+    else if (playSettings && playSettings->IsWinLengthMinusPressed()) {
+        
+        playSettings->ResetClickState();
+
+        playSettings->ChangeWinLength(-1);
+    }
+    else if (playSettings && playSettings->IsWinLengthPlusPressed()) {
+        
+        playSettings->ResetClickState();
+        
+        playSettings->ChangeWinLength(1);
+    }
 
 }
 
@@ -264,14 +265,17 @@ void Game::GameOverMenu()
         it->second->Draw(*window);
     }
 
-    // Process state change targets safely
+    // Safely grab the screen to check for button clicks
     GameOver* gameOver = static_cast<GameOver*>(m_menus[GameState::GAMEOVER].get());
+    if (!gameOver) return;
 
-    if (gameOver && gameOver->isAgainPressed()) {
+    if (gameOver->isAgainPressed()) {
         m_board.ResetBoard(GameSettings::GetBoardSize(), m_windowSize);
+        gameOver->ResetClickState();
         m_gameState = GameState::SINGLEPLAYER;
     }
-    else if (gameOver && gameOver->isBackPressed()) {
+    else if (gameOver->isBackPressed()) {
+        gameOver->ResetClickState();
         m_gameState = GameState::MENU;
     }
 }

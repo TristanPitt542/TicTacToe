@@ -12,6 +12,7 @@ private:
 
 public:
     void Init(const sf::Vector2u& windowSize, const sf::Font& font) override {
+        m_elements.clear();
         float centerX = windowSize.x / 2.f;
 
         auto title = std::make_unique<Text>(sf::Vector2f(centerX, 100.f), "MAIN MENU", font, 60.0f);

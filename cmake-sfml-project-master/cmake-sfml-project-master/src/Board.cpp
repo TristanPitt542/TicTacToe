@@ -50,15 +50,14 @@ bool Board::HandleMouseClick(sf::Vector2i mousePos, CellState playerPiece)
     return false; 
 }
 
-CellState Board::CheckWinCondition() const
+CellState Board::CheckWinCondition(int winLength) const
 {
     // Direction vectors to check {dx, dy}
-    // Horizontal, Vertical, Diagonal Down-Right, Diagonal Up-Right
     const sf::Vector2i directions[] = {
         {1, 0},  // Right
         {0, 1},  // Down
         {1, 1},  // Diagonal Down-Right
-        {1, -1}  // Diagonal Up-Right
+        {1, -1} // Diagonal Up-Right
     };
 
     bool hasEmptyCell = false;
@@ -69,32 +68,39 @@ CellState Board::CheckWinCondition() const
         {
             CellState current = GetCellState(x, y);
             if (current == CellState::EMPTY) {
-                hasEmptyCell = true; // Found an empty spot, so it's not a tie yet
+                hasEmptyCell = true;
                 continue;
             }
 
             // Look in all 4 directions starting from this cell
             for (const auto& dir : directions)
             {
-                // Check if the next two elements in this direction match
-                if (GetCellState(x + dir.x, y + dir.y) == current &&
-                    GetCellState(x + dir.x * 2, y + dir.y * 2) == current)
+                bool matchFound = true;
+
+                // Check the next (winLength - 1) cells in this direction
+                for (int i = 1; i < winLength; ++i)
                 {
-                    // Return winner (X or O)
+                    if (GetCellState(x + dir.x * i, y + dir.y * i) != current)
+                    {
+                        matchFound = false;
+                        break; // Stop checking this direction early
+                    }
+                }
+
+                // If the loop finished without breaking, we have a winner
+                if (matchFound)
+                {
                     return current;
                 }
             }
         }
     }
 
-    // If we checked the whole board, found no winner, 
-    // and there are absolutely no empty cells left, it's a tie.
     if (!hasEmptyCell)
     {
         return CellState::TIE;
     }
 
-    // No winner found yet, and there are still open moves
     return CellState::EMPTY;
 }
 
@@ -144,13 +150,13 @@ void Board::Draw(sf::RenderWindow& window)
     // Template for 'O'
     sf::CircleShape oPiece(pieceSize / 2.f);
     oPiece.setFillColor(sf::Color::Transparent);
-    oPiece.setOutlineColor(sf::Color::Cyan);       // Neon Blue for Player O
+    oPiece.setOutlineColor(m_oColor);       // Neon Blue for Player O
     oPiece.setOutlineThickness(m_cellSize * 0.08f); // 8% thickness relative to cell size
 
     // Template for 'X' lines
     float lineThickness = m_cellSize * 0.08f;
     sf::RectangleShape xLine(sf::Vector2f(pieceSize * 1.2f, lineThickness)); // Slightly longer for diagonal cross
-    xLine.setFillColor(sf::Color::Magenta);
+    xLine.setFillColor(m_xColor);
     // Set the origin to the center of the line so it rotates cleanly
     xLine.setOrigin({ (pieceSize * 1.2f) / 2.f, lineThickness / 2.f });
 

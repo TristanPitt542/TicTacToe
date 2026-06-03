@@ -71,6 +71,8 @@ private:
 
     GameState m_gameState;
 
+    CellState m_winner;
+
     std::map<GameState, std::unique_ptr<MenuScreen>> m_menus;
 
     Board m_board;

@@ -26,6 +26,7 @@ void Text::SetText(std::string text)
 
 void Text::Update(const sf::Event& event, const sf::RenderWindow& window)
 {
+    text.setFillColor(color);
 }
 
 void Text::Draw(sf::RenderTarget& target) const

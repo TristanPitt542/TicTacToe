@@ -12,7 +12,13 @@ private:
 
 	std::vector<CellState> m_board;
 
+protected:
+	// Colors
+	sf::Color m_oColor = sf::Color::Cyan;
+	sf::Color m_xColor = sf::Color::Magenta;
+
 public:
+
 	Board(sf::Vector2i boardSize, sf::Vector2f widnowSize);
 	~Board();
 
@@ -20,7 +26,7 @@ public:
 	bool HandleMouseClick(sf::Vector2i mousePos, CellState playerPiece);
 
 	//Check Board
-	CellState CheckWinCondition() const;
+	CellState CheckWinCondition(int winLength) const;
 	CellState GetCellState(int x, int y) const;
 	void SetCellState(int x, int y, CellState state);
 	void ResetBoard(sf::Vector2i boardSize, sf::Vector2f windowSize);
