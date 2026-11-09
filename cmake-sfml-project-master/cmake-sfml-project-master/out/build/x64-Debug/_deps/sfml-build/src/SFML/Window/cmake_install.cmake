@@ -1,8 +1,8 @@
-# Install script for directory: E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-src/src/SFML/Window
+# Install script for directory: C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-src/src/SFML/Window
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -33,16 +33,16 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "devel" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/sfml-window-s-d.lib")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/sfml-window-s-d.lib")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "devel" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/SFML" TYPE FILE FILES "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/src/SFML/Window/SFMLWindowDependencies.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/SFML" TYPE FILE FILES "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/src/SFML/Window/SFMLWindowDependencies.cmake")
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/src/SFML/Window/install_local_manifest.txt"
+  file(WRITE "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/src/SFML/Window/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

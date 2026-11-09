@@ -1,16 +1,19 @@
+/** @file Text.cpp */
+
 #include "Text.hpp"
 
-Text::Text(sf::Vector2f position, std::string text, const sf::Font& font, float textSize,sf::Color color)
+Text::Text(sf::Vector2f position, std::string text, const sf::Font& font, float textSize, sf::Color color)
     : text(font, text, textSize)
 {
     this->color = color;
     this->text.setFillColor(sf::Color::Black);
 
+    // Use the visual bounds so position remains the text center.
     sf::FloatRect textBounds = this->text.getLocalBounds();
     this->text.setOrigin({
         textBounds.position.x + (textBounds.size.x / 2.f),
         textBounds.position.y + (textBounds.size.y / 2.f)
-        });
+    });
 
     this->text.setPosition(position);
 }

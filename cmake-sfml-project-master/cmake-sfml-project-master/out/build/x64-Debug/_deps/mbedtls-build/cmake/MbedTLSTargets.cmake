@@ -7,7 +7,7 @@ if(CMAKE_VERSION VERSION_LESS "2.8.3")
    message(FATAL_ERROR "CMake >= 2.8.3 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.8.3...4.0)
+cmake_policy(VERSION 2.8.3...4.1)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -50,7 +50,7 @@ unset(_cmake_expected_targets)
 add_library(MbedTLS::mbedcrypto STATIC IMPORTED)
 
 set_target_properties(MbedTLS::mbedcrypto PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/mbedtls-src/include/"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/mbedtls-src/include/"
   INTERFACE_LINK_LIBRARIES "ws2_32;bcrypt"
 )
 
@@ -58,7 +58,7 @@ set_target_properties(MbedTLS::mbedcrypto PROPERTIES
 add_library(MbedTLS::mbedx509 STATIC IMPORTED)
 
 set_target_properties(MbedTLS::mbedx509 PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/mbedtls-src/include/"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/mbedtls-src/include/"
   INTERFACE_LINK_LIBRARIES "ws2_32;bcrypt;MbedTLS::mbedcrypto"
 )
 
@@ -66,7 +66,7 @@ set_target_properties(MbedTLS::mbedx509 PROPERTIES
 add_library(MbedTLS::mbedtls STATIC IMPORTED)
 
 set_target_properties(MbedTLS::mbedtls PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/mbedtls-src/include/"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/mbedtls-src/include/"
   INTERFACE_LINK_LIBRARIES "ws2_32;bcrypt;MbedTLS::mbedx509"
 )
 
@@ -74,21 +74,21 @@ set_target_properties(MbedTLS::mbedtls PROPERTIES
 set_property(TARGET MbedTLS::mbedcrypto APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
 set_target_properties(MbedTLS::mbedcrypto PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "C"
-  IMPORTED_LOCATION_DEBUG "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/mbedcryptod.lib"
+  IMPORTED_LOCATION_DEBUG "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/mbedcryptod.lib"
   )
 
 # Import target "MbedTLS::mbedx509" for configuration "Debug"
 set_property(TARGET MbedTLS::mbedx509 APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
 set_target_properties(MbedTLS::mbedx509 PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "C"
-  IMPORTED_LOCATION_DEBUG "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/mbedx509d.lib"
+  IMPORTED_LOCATION_DEBUG "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/mbedx509d.lib"
   )
 
 # Import target "MbedTLS::mbedtls" for configuration "Debug"
 set_property(TARGET MbedTLS::mbedtls APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
 set_target_properties(MbedTLS::mbedtls PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "C"
-  IMPORTED_LOCATION_DEBUG "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/mbedtlsd.lib"
+  IMPORTED_LOCATION_DEBUG "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/mbedtlsd.lib"
   )
 
 # This file does not depend on other imported targets which have

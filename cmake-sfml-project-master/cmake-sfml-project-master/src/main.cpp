@@ -1,3 +1,5 @@
+/** @file main.cpp */
+
 #include "Game/Game.hpp"
 
 int main()

@@ -7,7 +7,7 @@ if(CMAKE_VERSION VERSION_LESS "2.8.3")
    message(FATAL_ERROR "CMake >= 2.8.3 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.8.3...4.0)
+cmake_policy(VERSION 2.8.3...4.1)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -51,7 +51,7 @@ add_library(libssh2::libssh2_static STATIC IMPORTED)
 
 set_target_properties(libssh2::libssh2_static PROPERTIES
   INTERFACE_COMPILE_DEFINITIONS "LIBSSH2_API="
-  INTERFACE_INCLUDE_DIRECTORIES "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/libssh2-src/include"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/libssh2-src/include"
   INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:ws2_32>"
 )
 
@@ -59,7 +59,7 @@ set_target_properties(libssh2::libssh2_static PROPERTIES
 set_property(TARGET libssh2::libssh2_static APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
 set_target_properties(libssh2::libssh2_static PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "C"
-  IMPORTED_LOCATION_DEBUG "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/libssh2.lib"
+  IMPORTED_LOCATION_DEBUG "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/libssh2.lib"
   )
 
 # This file does not depend on other imported targets which have

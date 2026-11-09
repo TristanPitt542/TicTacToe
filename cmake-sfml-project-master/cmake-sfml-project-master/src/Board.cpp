@@ -1,23 +1,24 @@
+/** @file Board.cpp */
+
 #include "Board.hpp"
 
+    // Board cells are stored in row-major order.
 Board::Board(sf::Vector2i boardSize, sf::Vector2f windowSize)
 {
     m_boardSize = boardSize;
     m_board = std::vector<CellState>(m_boardSize.x * m_boardSize.y, CellState::EMPTY);
 
-    // Determine cell size based on the smallest window dimension to ensure it fits completely
+    // Use the smaller scale so the full board fits in the window.
     float maxBoardWidth = windowSize.x / m_boardSize.x;
     float maxBoardHeight = windowSize.y / m_boardSize.y;
     m_cellSize = std::min(maxBoardWidth, maxBoardHeight);
 
-    // Calculate the total size of the grid in pixels
     float totalBoardWidth = m_boardSize.x * m_cellSize;
     float totalBoardHeight = m_boardSize.y * m_cellSize;
 
-    // Calculate the centering offset
+    // Center the board in the window.
     m_boardOffset.x = (windowSize.x - totalBoardWidth) / 2.f;
     m_boardOffset.y = (windowSize.y - totalBoardHeight) / 2.f;
-
 }
 
 Board::~Board()
@@ -26,38 +27,33 @@ Board::~Board()
 
 bool Board::HandleMouseClick(sf::Vector2i mousePos, CellState playerPiece)
 {
-    // Subtract the offset to get the position relative to the top-left of the board
+    // Convert window coordinates to board coordinates.
     float relativeX = mousePos.x - m_boardOffset.x;
     float relativeY = mousePos.y - m_boardOffset.y;
 
-    // Divide by cell size to convert pixels to grid indices
     int i = static_cast<int>(relativeX / m_cellSize);
     int j = static_cast<int>(relativeY / m_cellSize);
 
-    // Boundary check
     if (i >= 0 && i < m_boardSize.x && j >= 0 && j < m_boardSize.y)
     {
-        // Move validity check, Only allow placing a piece if the tile is empty
         if (GetCellState(i, j) == CellState::EMPTY)
         {
             SetCellState(i, j, playerPiece);
-            // Click successfully processed and piece placed
             return true;
         }
     }
 
-    // Click was out of bounds or tile was already taken
     return false; 
 }
 
 CellState Board::CheckWinCondition(int winLength) const
 {
-    // Direction vectors to check {dx, dy}
+    // Horizontal, vertical, and diagonal directions.
     const sf::Vector2i directions[] = {
-        {1, 0},  // Right
-        {0, 1},  // Down
-        {1, 1},  // Diagonal Down-Right
-        {1, -1} // Diagonal Up-Right
+        {1, 0},   // Right (horizontal)
+        {0, 1},   // Down (vertical)
+        {1, 1},   // Diagonal Down-Right
+        {1, -1}   // Diagonal Up-Right
     };
 
     bool hasEmptyCell = false;
@@ -69,48 +65,46 @@ CellState Board::CheckWinCondition(int winLength) const
             CellState current = GetCellState(x, y);
             if (current == CellState::EMPTY) {
                 hasEmptyCell = true;
-                continue;
+                continue;  // Skip empty cells
             }
 
-            // Look in all 4 directions starting from this cell
             for (const auto& dir : directions)
             {
                 bool matchFound = true;
 
-                // Check the next (winLength - 1) cells in this direction
                 for (int i = 1; i < winLength; ++i)
                 {
                     if (GetCellState(x + dir.x * i, y + dir.y * i) != current)
                     {
-                        matchFound = false;
-                        break; // Stop checking this direction early
-                    }
-                }
+						matchFound = false;
+                        break;
+					}
+				}
 
-                // If the loop finished without breaking, we have a winner
-                if (matchFound)
-                {
-                    return current;
-                }
-            }
-        }
-    }
+				if (matchFound)
+				{
+					return current;
+				}
+			}
+		}
+	}
 
-    if (!hasEmptyCell)
-    {
-        return CellState::TIE;
-    }
+    // No winning line; a full board is a tie.
+	if (!hasEmptyCell)
+	{
+		return CellState::TIE;
+	}
 
-    return CellState::EMPTY;
+	return CellState::EMPTY;
 }
 
 CellState Board::GetCellState(int x, int y) const
 {
-	// Out of bounds safety check
+    // Treat out-of-range lookups as empty; this also simplifies line checks.
 	if (x < 0 || x >= m_boardSize.x || y < 0 || y >= m_boardSize.y) {
 		return CellState::EMPTY;
 	}
-	
+
 	return m_board[y * m_boardSize.x + x];
 }
 
@@ -123,21 +117,31 @@ void Board::SetCellState(int x, int y, CellState state)
 
 void Board::ResetBoard(sf::Vector2i boardSize, sf::Vector2f windowSize)
 {
-    m_boardSize = boardSize;
-    m_board.assign(m_boardSize.x * m_boardSize.y, CellState::EMPTY);
+	m_boardSize = boardSize;
+	m_board.assign(m_boardSize.x * m_boardSize.y, CellState::EMPTY);
 
-    // Recalculate layout metrics dynamically so the grid scales to fit perfectly
-    float maxBoardWidth = windowSize.x / m_boardSize.x;
-    float maxBoardHeight = windowSize.y / m_boardSize.y;
-    m_cellSize = std::min(maxBoardWidth, maxBoardHeight);
+    // Recalculate the scale and offset for the new dimensions.
+	float maxBoardWidth = windowSize.x / m_boardSize.x;
+	float maxBoardHeight = windowSize.y / m_boardSize.y;
+	m_cellSize = std::min(maxBoardWidth, maxBoardHeight);
 
-    float totalBoardWidth = m_boardSize.x * m_cellSize;
-    float totalBoardHeight = m_boardSize.y * m_cellSize;
+	float totalBoardWidth = m_boardSize.x * m_cellSize;
+	float totalBoardHeight = m_boardSize.y * m_cellSize;
 
-    m_boardOffset.x = (windowSize.x - totalBoardWidth) / 2.f;
-    m_boardOffset.y = (windowSize.y - totalBoardHeight) / 2.f;
+	m_boardOffset.x = (windowSize.x - totalBoardWidth) / 2.f;
+	m_boardOffset.y = (windowSize.y - totalBoardHeight) / 2.f;
 }
 
+/**
+ * @brief Draws the complete board grid and all pieces
+ * 
+ * Renders the game board including:
+ * - Checkerboard grid cells with alternating shades
+ * - O pieces as outlined circles
+ * - X pieces as diagonal crosses
+ * 
+ * @param window The render window to draw to
+ */
 void Board::Draw(sf::RenderWindow& window)
 {
     // Existing Cell Background Template
@@ -190,7 +194,6 @@ void Board::Draw(sf::RenderWindow& window)
             }
             else if (currentCell == CellState::X)
             {
-                // Find the absolute center point of the current cell square
                 sf::Vector2f cellCenter{ posX + (m_cellSize / 2.f), posY + (m_cellSize / 2.f) };
 
                 // Draw forward slash line

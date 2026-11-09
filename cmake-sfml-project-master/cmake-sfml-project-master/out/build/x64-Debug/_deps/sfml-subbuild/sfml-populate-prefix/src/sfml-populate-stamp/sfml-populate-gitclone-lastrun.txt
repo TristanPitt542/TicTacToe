@@ -3,9 +3,9 @@
 # No other meaning or use of this file is supported.
 
 method=git
-command=C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-subbuild/sfml-populate-prefix/tmp/sfml-populate-gitclone.cmake
-source_dir=E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-src
-work_dir=E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps
+command=C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-subbuild/sfml-populate-prefix/tmp/sfml-populate-gitclone.cmake
+source_dir=C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-src
+work_dir=C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps
 repository=https://github.com/SFML/SFML.git
 remote=origin
 init_submodules=TRUE

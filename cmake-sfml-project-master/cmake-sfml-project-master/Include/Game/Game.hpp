@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿/** @file Game.hpp */
+
+#pragma once
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -8,74 +10,98 @@
 #include "GameOver.hpp"
 #include <map>
 
+/** Coordinates the window, menus, board, and main game loop. */
 class Game
 {
 public:
-    //Turn
-    enum class Turn {
-        Player1,
-        Player2,
-    };
+	enum class Turn {
+		Player1,
+		Player2,
+	};
 
-    Game();
+	Game();
 
-    void InitialiseWindow();
+	~Game();
 
-    void Init();
-    
-    void Run();
+	void InitialiseWindow();
 
-    void SwitchTurn();
+	void Init();
 
-    void ProcessInput(Board& board);
+	void Run();
 
-    void Menu();
+	void SwitchTurn();
 
-    void PlaySettingsMenu();
+	void ProcessInput(Board& board);
 
-    void GameOverMenu();
+	void Menu();
 
-    void Ingame();
+	void PlaySettingsMenu();
+
+	void GameOverMenu();
+
+	void Ingame();
+
+	void ExitGame();
 
 private:
-    // Window
-    std::unique_ptr<sf::RenderWindow> window;
-    sf::Vector2f m_windowSize = sf::Vector2f(600, 600);
-    std::string m_WindowTitle = "TIC TAC TOE";
-    int m_FPSLimit = 60;
-    sf::Color m_background = sf::Color(50, 50, 50);
+	// Window and rendering.
+	/// The main SFML render window
+	std::unique_ptr<sf::RenderWindow> window;
+	/// Window dimensions in pixels
+	sf::Vector2f m_windowSize = sf::Vector2f(600, 600);
+	/// Title displayed in the window bar
+	std::string m_WindowTitle = "TIC TAC TOE";
+	/// Frames per second limit
+	int m_FPSLimit = 60;
+	/// Background color of the game window
+	sf::Color m_background = sf::Color(50, 50, 50);
 
-    // Font
-    sf::Font m_gameFont;
+	// Assets.
+	/// Font loaded from file for rendering text (menus, score, etc.)
+	sf::Font m_gameFont;
 
-    // Sound
-    sf::SoundBuffer m_placeBuffer;
-    sf::SoundBuffer m_gameOverBuffer;
+	// Audio.
+	/// Sound buffer for piece placement effect
+	sf::SoundBuffer m_placeBuffer;
+	/// Sound buffer for game over effect
+	sf::SoundBuffer m_gameOverBuffer;
+	/// Flag indicating if place sound was successfully loaded
+	bool m_placeSoundLoaded = false;
+	/// Flag indicating if game over sound was successfully loaded
+	bool m_gameOverSoundLoaded = false;
+	/// Flag indicating if background music was successfully loaded
+	bool m_musicLoaded = false;
 
-    sf::Sound m_sound;
-    sf::Music m_music;
+	/// Sound effect player
+	sf::Sound m_sound{m_placeBuffer};
+	/// Background music player
+	sf::Music m_music;
 
+	// Game state.
 
-    // GameState
-    enum class GameState {
-        MENU,
-        SINGLEPLAYER,
-        PLAYSETTINGS,
-        MULTIPLAYER,
-        GAMEOVER,
-        HOST,
-        CLIENT
-    };
+	enum class GameState {
+		MENU,
+		SINGLEPLAYER,
+		PLAYSETTINGS,
+		GAMEOVER,
+		EXIT
+	};
 
-    Turn m_currentTurn;
+	/// Whose turn it currently is (Player1 or Player2)
+	Turn m_currentTurn;
 
-    GameState m_gameState;
+	/// Current game state (menu, gameplay, etc.)
+	GameState m_gameState;
 
-    CellState m_winner;
+	/// The winner of the current game (X, O, or TIE/EMPTY)
+	CellState m_winner;
 
-    std::map<GameState, std::unique_ptr<MenuScreen>> m_menus;
+	/// Map of game states to their corresponding menu screens
+	std::map<GameState, std::unique_ptr<MenuScreen>> m_menus;
 
-    Board m_board;
+	/// The game board
+	Board m_board;
 
-    bool m_wasLeftMousePressed = false;
+	/// Tracks if the left mouse button was pressed in the previous frame (used for click detection)
+	bool m_wasLeftMousePressed = false;
 };

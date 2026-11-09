@@ -1,53 +1,82 @@
+/** @file Game.cpp */
+
 #include "Game.hpp"
 #include <iostream>
 
 Game::Game() : m_board(GameSettings::GetBoardSize(), m_windowSize), m_sound(m_placeBuffer)
 {
-    InitialiseWindow();
-    m_gameState = GameState::MENU;
+	InitialiseWindow();
+	m_gameState = GameState::MENU;
 
-    Init();
+	Init();
+}
+
+Game::~Game()
+{
+	m_sound.stop();
+	m_music.stop();
+	window->close();
 }
 
 void Game::InitialiseWindow()
 {
-    window = std::make_unique<sf::RenderWindow>(
-        sf::VideoMode(sf::Vector2u(static_cast<unsigned int>(m_windowSize.x),
-            static_cast<unsigned int>(m_windowSize.y))),
-        m_WindowTitle
-    );
-    window->setFramerateLimit(m_FPSLimit);
+	window = std::make_unique<sf::RenderWindow>(
+		sf::VideoMode(sf::Vector2u(static_cast<unsigned int>(m_windowSize.x),
+			static_cast<unsigned int>(m_windowSize.y))),
+		m_WindowTitle
+	);
+	window->setFramerateLimit(m_FPSLimit);
 }
 
 void Game::Init()
 {
-    // Load the font file first
+    // Load resources before constructing menus, which keep references to the font.
     if (!m_gameFont.openFromFile("Assets/Fonts/arial.ttf"))
     {
         std::cout << "Failed to load engine font!" << std::endl;
     }
 
-    // Load the sounds from file
-    if (!m_placeBuffer.loadFromFile("Assets/Sounds/thump.mp3"))
+    m_placeSoundLoaded = m_placeBuffer.loadFromFile("Assets/Sounds/thump.mp3")
+        && m_placeBuffer.getChannelCount() > 0
+        && m_placeBuffer.getSampleCount() > 0;
+    if (!m_placeSoundLoaded)
     {
         std::cout << "Failed to load engine sound!" << std::endl;
     }
     m_sound.setVolume(2);
 
-    if (!m_gameOverBuffer.loadFromFile("Assets/Sounds/gameover.mp3"))
+    m_gameOverSoundLoaded = m_gameOverBuffer.loadFromFile("Assets/Sounds/gameover.mp3")
+        && m_gameOverBuffer.getChannelCount() > 0
+        && m_gameOverBuffer.getSampleCount() > 0;
+    if (!m_gameOverSoundLoaded)
     {
         std::cout << "Failed to load GameOver sound!" << std::endl;
     }
 
-    if (!m_music.openFromFile("Assets/Sounds/music.mp3"))
+    m_musicLoaded = m_music.openFromFile("Assets/Sounds/Music.mp3");
+    if (!m_musicLoaded)
     {
         std::cout << "Failed to load engine music!" << std::endl;
     }
-    m_music.setVolume(2);
-    m_music.setLooping(true);
-    m_music.play();
+    else
+    {
+        if (m_music.getDuration().asSeconds() <= 0)
+        {
+            m_musicLoaded = false;
+            std::cout << "Music file has no valid audio data!" << std::endl;
+        }
+    }
 
-    // Allocate your menu container and pass the stable font reference directly
+    if (m_placeSoundLoaded)
+        m_sound.setBuffer(m_placeBuffer);
+
+    if (m_musicLoaded)
+    { 
+        m_music.setVolume(2);
+        m_music.setLooping(true);
+        m_music.play();
+    }
+
     auto mainMenu = std::make_unique<MainMenu>();
     mainMenu->Init(window->getSize(), m_gameFont);
 
@@ -57,7 +86,6 @@ void Game::Init()
     auto gameOver = std::make_unique<GameOver>();
     gameOver->Init(window->getSize(), m_gameFont);
 
-    // Move the menu interface container into your map
     m_menus[GameState::MENU] = std::move(mainMenu);
     m_menus[GameState::PLAYSETTINGS] = std::move(playSettings);
     m_menus[GameState::GAMEOVER] = std::move(gameOver);
@@ -69,14 +97,12 @@ void Game::Run()
 
     while (window->isOpen())
     {
-        // Handle window events
         while (const std::optional event = window->pollEvent())
         {
             if (event->is<sf::Event::Closed>()) {
                 window->close();
             }
 
-            // Forward the active event to your Menu System while in the menu loop
             auto it = m_menus.find(m_gameState);
             if (it != m_menus.end()) {
                 it->second->Update(*event, *window);
@@ -105,7 +131,11 @@ void Game::Run()
             break;
         case GameState::CLIENT:
             break;
+        case GameState::EXIT:
+            ExitGame();
+			break;
         default:
+            Menu();
             break;
         }
 
@@ -114,49 +144,49 @@ void Game::Run()
 }
 
 void Game::SwitchTurn() {
-    // If it's X, make it O. Otherwise, make it X.
     m_currentTurn = (m_currentTurn == Turn::Player1) ? Turn::Player2 : Turn::Player1;
 }
 
 void Game::ProcessInput(Board& board)
 {
-    // Get current mouse state
     bool isLeftMousePressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
 
-    // Detect release (was pressed last frame, now not pressed)
+    // Process on release so a held mouse button does not place multiple pieces.
     if (m_wasLeftMousePressed && !isLeftMousePressed)
     {
-        // Get mouse position relative to window
         sf::Vector2i mousePos = sf::Mouse::getPosition(*window);
 
-        // Determine which piece to place
         CellState pieceToPlace = (m_currentTurn == Turn::Player1)
             ? CellState::X
             : CellState::O;
 
-        // Handle the click
         bool moveSuccessful = board.HandleMouseClick(mousePos, pieceToPlace);
 
         if (moveSuccessful)
         {
-            m_sound.setBuffer(m_placeBuffer);
-            m_sound.play();
+            if (m_placeSoundLoaded)
+            {
+                m_sound.setBuffer(m_placeBuffer);
+                m_sound.play();
+            }
 
-            // Check for winner immediately
             CellState winner = board.CheckWinCondition(GameSettings::GetWinLength());
 
             if (winner == CellState::X || winner == CellState::O || winner == CellState::TIE)
             {
-                m_sound.setBuffer(m_gameOverBuffer);
-                m_sound.play();
+                if (m_gameOverSoundLoaded)
+                {
+                    m_sound.setBuffer(m_gameOverBuffer);
+                    m_sound.play();
+                }
 
                 m_winner = winner;
                 m_gameState = GameState::GAMEOVER;
 
                 auto* gameOver = static_cast<GameOver*>(m_menus[GameState::GAMEOVER].get());
                 if (gameOver) {
-                    gameOver->SetWinner(m_winner);          // Pass the winner state
-                    gameOver->Init(window->getSize(), m_gameFont); // Re-bake the Text elements
+                    gameOver->SetWinner(m_winner);
+                    gameOver->Init(window->getSize(), m_gameFont);
                 }
             }
             else
@@ -166,7 +196,6 @@ void Game::ProcessInput(Board& board)
         }
     }
 
-    // Update previous state
     m_wasLeftMousePressed = isLeftMousePressed;
 
     // Optional: handle window close via Escape key
@@ -192,6 +221,11 @@ void Game::Menu()
 
         m_gameState = GameState::PLAYSETTINGS;
     }
+
+	if (mainMenu && mainMenu->IsExitPressed()) {
+		mainMenu->ResetClickState();
+		m_gameState = GameState::EXIT;
+	}
 }
 
 void Game::PlaySettingsMenu()
@@ -287,4 +321,11 @@ void Game::Ingame()
 
     // Render
     m_board.Draw(*window);
+}
+
+void Game::ExitGame()
+{
+    m_sound.stop();
+    m_music.stop();
+    window->close();
 }

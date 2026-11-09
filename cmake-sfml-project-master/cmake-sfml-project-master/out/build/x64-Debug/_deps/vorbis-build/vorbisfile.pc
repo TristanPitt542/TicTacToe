@@ -1,9 +1,9 @@
 # libvorbisfile pkg-config source file
 
-prefix=E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug
-exec_prefix=E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug/bin
-libdir=E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug/lib
-includedir=E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug/include
+prefix=C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug
+exec_prefix=C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug/bin
+libdir=C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug/lib
+includedir=C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug/include
 
 Name: vorbisfile
 Description: vorbisfile is a library that provides a convenient high-level API for decoding and basic manipulation of all Vorbis I audio streams

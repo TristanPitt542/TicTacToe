@@ -6,46 +6,53 @@
 
 class MainMenu : public MenuScreen {
 private:
-    Button* m_singlePlayerButton = nullptr;
-    Button* m_multiPlayerButton = nullptr;
-    Button* m_optionsButton = nullptr;
+	/// Pointer to the single player button for click checking
+	Button* m_singlePlayerButton = nullptr;
+	/// Pointer to the exit button for click checking
+	Button* m_ExitButton = nullptr;
 
 public:
-    void Init(const sf::Vector2u& windowSize, const sf::Font& font) override {
-        m_elements.clear();
-        float centerX = windowSize.x / 2.f;
+	/** Creates the title and main menu buttons. */
+	void Init(const sf::Vector2u& windowSize, const sf::Font& font) override {
+		m_elements.clear();
+		float centerX = windowSize.x / 2.f;
 
-        auto title = std::make_unique<Text>(sf::Vector2f(centerX, 100.f), "MAIN MENU", font, 60.0f);
-        auto singlePlayer = std::make_unique<Button>(sf::Vector2f(centerX, 250.f), "Singleplayer", font);
-        auto multiPlayer = std::make_unique<Button>(sf::Vector2f(centerX, 350.f), "Multiplay", font);
-        auto options = std::make_unique<Button>(sf::Vector2f(centerX, 450.f), "Options", font);
+		auto title = std::make_unique<Text>(sf::Vector2f(centerX, 100.f), "MAIN MENU", font, 60.0f);
 
-        m_singlePlayerButton = singlePlayer.get();
-        m_multiPlayerButton = multiPlayer.get();
-        m_optionsButton = options.get();
+		auto singlePlayer = std::make_unique<Button>(sf::Vector2f(centerX, 250.f), "Singleplayer", font);
 
-        m_elements.push_back(std::move(title));
-        m_elements.push_back(std::move(singlePlayer));
-        m_elements.push_back(std::move(multiPlayer));
-        m_elements.push_back(std::move(options));
-    }
+		auto exit = std::make_unique<Button>(sf::Vector2f(centerX, 450.f), "Exit", font);
 
-    virtual void Update(const sf::Event& event, const sf::RenderWindow& window) {
-        for (auto& element : m_elements) {
-            element->Update(event, window);
-        }
-    }
+		// Keep non-owning pointers for click checks; ownership remains in m_elements.
+		m_singlePlayerButton = singlePlayer.get();
+		m_ExitButton = exit.get();
 
-    void ResetClickState() {
-        for (Button* button : { m_singlePlayerButton, m_multiPlayerButton, m_optionsButton }) {
-            if (button) {
-                button->ResetClickState();
-            }
-        }
-    }
+		m_elements.push_back(std::move(title));
+		m_elements.push_back(std::move(singlePlayer));
+		m_elements.push_back(std::move(exit));
+	}
 
-    // Custom helper to check if a state change was requested
-    bool IsSinglePlayerPressed() const { return m_singlePlayerButton && m_singlePlayerButton->IsClicked(); }
-    bool IsPlayPressed() const { return m_singlePlayerButton && m_singlePlayerButton->IsClicked(); }
-    bool IsOptionsPressed() const { return m_optionsButton && m_optionsButton->IsClicked(); }
+	virtual void Update(const sf::Event& event, const sf::RenderWindow& window) {
+		for (auto& element : m_elements) {
+			element->Update(event, window);
+		}
+	}
+
+	/** Clears button state after menu input has been handled. */
+	void ResetClickState() {
+		for (Button* button : { m_singlePlayerButton, m_ExitButton }) {
+			if (button) {
+				button->ResetClickState();
+			}
+		}
+	}
+
+	/** Returns whether Singleplayer was clicked. */
+	bool IsSinglePlayerPressed() const { return m_singlePlayerButton && m_singlePlayerButton->IsClicked(); }
+
+	/** Alias for IsSinglePlayerPressed. */
+	bool IsPlayPressed() const { return m_singlePlayerButton && m_singlePlayerButton->IsClicked(); }
+
+	/** Returns whether Exit was clicked. */
+	bool IsExitPressed() const { return m_ExitButton && m_ExitButton->IsClicked(); }
 };

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 ###########################################################################
 
-prefix=E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug
+prefix=C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/install/x64-Debug
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

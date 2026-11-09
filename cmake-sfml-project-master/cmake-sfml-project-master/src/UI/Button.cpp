@@ -1,3 +1,5 @@
+/** @file Button.cpp */
+
 #include "Button.hpp"
 
 Button::Button(sf::Vector2f position, std::string buttonText, const sf::Font& font, sf::Vector2f buttonSize)
@@ -8,25 +10,30 @@ Button::Button(sf::Vector2f position, std::string buttonText, const sf::Font& fo
 	this->colorPressed = sf::Color::Red;
 	this->buttonState = IDLE;
 
-    if (!buffer.loadFromFile("Assets/Sounds/thump.mp3"))
-    {
-        std::cout << "Failed to load buton sound!" << std::endl;
-    }
+	soundLoaded = buffer.loadFromFile("Assets/Sounds/thump.mp3")
+		&& buffer.getChannelCount() > 0
+		&& buffer.getSampleCount() > 0;
+	if (!soundLoaded)
+	{
+		std::cout << "Failed to load button sound!" << std::endl;
+	}
 
-    this->sound.setVolume(2);
+	this->sound.setVolume(2);
+
 	shape.setSize({ buttonSize });
 	shape.setFillColor(colorIdle);
+    // Center the shape so position refers to its midpoint.
 	shape.setOrigin({ shape.getSize().x / 2.f, shape.getSize().y / 2.f });
 	shape.setPosition(position);
 }
 
 Button::~Button()
 {
+	sound.stop();
 }
 
 bool Button::IsClicked() {
     if (this->buttonState == PRESSED) {
-        // Degrade back to HOVER or IDLE so it doesn't fire again next frame
         this->buttonState = HOVER;
         this->shape.setFillColor(colorHover);
         return true;
@@ -45,19 +52,18 @@ void Button::Update(const sf::Event& event, const sf::RenderWindow& window)
 
     if (this->shape.getGlobalBounds().contains(mousePos))
     {
-        // If it's not pressed, it's at least hovering
         if (this->buttonState != PRESSED) {
             this->buttonState = HOVER;
             this->shape.setFillColor(colorHover);
         }
 
-        // Handle the unique click release event
         if (event.is<sf::Event::MouseButtonReleased>())
         {
             const auto* mouseEvent = event.getIf<sf::Event::MouseButtonReleased>();
             if (mouseEvent && mouseEvent->button == sf::Mouse::Button::Left)
             {
-                sound.play();
+                if (soundLoaded)
+                    sound.play();
                 this->buttonState = PRESSED;
                 this->shape.setFillColor(colorPressed);
             }
@@ -70,7 +76,7 @@ void Button::Update(const sf::Event& event, const sf::RenderWindow& window)
     }
 }
 
-// Reset helper so the button doesn't stay permanently locked to PRESSED
+// Clear the one-frame pressed state.
 void Button::ResetClickState() {
     this->buttonState = IDLE;
     this->shape.setFillColor(colorIdle);

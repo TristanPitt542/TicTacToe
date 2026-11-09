@@ -7,7 +7,7 @@ if(CMAKE_VERSION VERSION_LESS "2.8.3")
    message(FATAL_ERROR "CMake >= 2.8.3 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.8.3...4.0)
+cmake_policy(VERSION 2.8.3...4.1)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -51,7 +51,7 @@ add_library(FLAC::FLAC STATIC IMPORTED)
 
 set_target_properties(FLAC::FLAC PROPERTIES
   INTERFACE_COMPILE_DEFINITIONS "\$<\$<NOT:\$<BOOL:OFF>>:FLAC__NO_DLL>"
-  INTERFACE_INCLUDE_DIRECTORIES "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/flac-src/include"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/flac-src/include"
   INTERFACE_LINK_LIBRARIES "\$<\$<BOOL:>:m>;Ogg::ogg"
 )
 
@@ -59,7 +59,7 @@ set_target_properties(FLAC::FLAC PROPERTIES
 set_property(TARGET FLAC::FLAC APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
 set_target_properties(FLAC::FLAC PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "C;RC"
-  IMPORTED_LOCATION_DEBUG "E:/Github Projects/Tic Tac Toe/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/FLACd.lib"
+  IMPORTED_LOCATION_DEBUG "C:/Users/Trist/source/repos/PhoneBook/TicTacToe/cmake-sfml-project-master/cmake-sfml-project-master/out/build/x64-Debug/_deps/sfml-build/lib/FLACd.lib"
   )
 
 # Make sure the targets which have been exported in some other
