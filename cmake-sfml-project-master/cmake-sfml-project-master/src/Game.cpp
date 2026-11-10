@@ -198,7 +198,7 @@ void Game::ProcessInput(Board& board)
 
     m_wasLeftMousePressed = isLeftMousePressed;
 
-    // Optional: handle window close via Escape key
+    // Handle window close via Escape key
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
     {
         m_gameState = GameState::MENU;
